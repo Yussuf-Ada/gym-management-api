@@ -1,5 +1,8 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser, FormParser
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import Member
@@ -20,3 +23,12 @@ class MemberViewSet(viewsets.ModelViewSet):
         if self.action == 'list':
             return MemberListSerializer
         return MemberSerializer
+
+    @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
+    def upload_image(self, request, pk=None):
+        member = self.get_object()
+        if 'profile_image' not in request.FILES:
+            return Response({'error': 'No image provided'}, status=status.HTTP_400_BAD_REQUEST)
+        member.profile_image = request.FILES['profile_image']
+        member.save()
+        return Response({'profile_image': member.profile_image.url})

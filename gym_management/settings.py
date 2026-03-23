@@ -32,6 +32,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
+    'cloudinary_storage',
+    'cloudinary',
     # Local apps
     'users',
     'members',
@@ -142,3 +144,11 @@ CORS_ALLOWED_ORIGINS = os.getenv(
     'http://localhost:5173,http://127.0.0.1:5173'
 ).split(',')
 CORS_ALLOW_CREDENTIALS = True
+
+# Cloudinary Settings
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
