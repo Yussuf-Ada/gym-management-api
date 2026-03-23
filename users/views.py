@@ -5,6 +5,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth import get_user_model
+from django.utils import timezone
+from django.db.models import Count, Q
 
 from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, UserProfileSerializer, ChangePasswordSerializer
 
@@ -110,3 +112,38 @@ class ChangePasswordView(APIView):
         user.set_password(serializer.validated_data['new_password'])
         user.save()
         return Response({'message': 'Password updated successfully'})
+
+
+class DashboardStatsView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        from members.models import Member
+        from memberships.models import MemberMembership
+        from classes.models import GymClass, ClassBooking
+
+        today = timezone.now().date()
+
+        total_members = Member.objects.filter(is_active=True).count()
+        active_subscriptions = MemberMembership.objects.filter(
+            status='active',
+            end_date__gte=today
+        ).count()
+        expiring_soon = MemberMembership.objects.filter(
+            status='active',
+            end_date__gte=today,
+            end_date__lte=today + timezone.timedelta(days=7)
+        ).count()
+        total_classes = GymClass.objects.filter(is_active=True).count()
+        todays_bookings = ClassBooking.objects.filter(
+            booking_date=today,
+            status='confirmed'
+        ).count()
+
+        return Response({
+            'total_members': total_members,
+            'active_subscriptions': active_subscriptions,
+            'expiring_soon': expiring_soon,
+            'total_classes': total_classes,
+            'todays_bookings': todays_bookings,
+        })
