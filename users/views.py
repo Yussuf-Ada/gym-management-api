@@ -8,7 +8,9 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.db.models import Count, Q
 
-from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, UserProfileSerializer, ChangePasswordSerializer
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer, UserProfileSerializer, ChangePasswordSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer
+from .models import PasswordResetToken
+from .utils import send_password_reset_email
 
 User = get_user_model()
 
@@ -147,3 +149,44 @@ class DashboardStatsView(APIView):
             'total_classes': total_classes,
             'todays_bookings': todays_bookings,
         })
+
+
+class PasswordResetRequestView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        serializer = PasswordResetRequestSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data['email']
+
+        try:
+            user = User.objects.get(email=email)
+            token = PasswordResetToken.objects.create(user=user)
+            send_password_reset_email(email, token.token)
+        except User.DoesNotExist:
+            pass
+
+        return Response({'message': 'If an account exists, a reset email has been sent'})
+
+
+class PasswordResetConfirmView(APIView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request):
+        serializer = PasswordResetConfirmSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            token = PasswordResetToken.objects.get(token=serializer.validated_data['token'])
+            if not token.is_valid:
+                return Response({'error': 'Token expired or already used'}, status=status.HTTP_400_BAD_REQUEST)
+
+            user = token.user
+            user.set_password(serializer.validated_data['new_password'])
+            user.save()
+            token.used = True
+            token.save()
+
+            return Response({'message': 'Password reset successful'})
+        except PasswordResetToken.DoesNotExist:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
