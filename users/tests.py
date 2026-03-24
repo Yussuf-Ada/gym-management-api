@@ -87,7 +87,7 @@ class DashboardTests(APITestCase):
             password='AdminPass123!'
         )
         self.client.force_authenticate(user=self.user)
-        self.dashboard_url = reverse('dashboard-stats')
+        self.dashboard_url = reverse('dashboard_stats')
         
         # Create test data
         self.member = Member.objects.create(
@@ -123,8 +123,8 @@ class PasswordResetTests(APITestCase):
             email='test@example.com',
             password='TestPass123!'
         )
-        self.reset_request_url = reverse('password-reset-request')
-        self.reset_confirm_url = reverse('password-reset-confirm')
+        self.reset_request_url = reverse('password_reset_request')
+        self.reset_confirm_url = reverse('password_reset_confirm')
 
     def test_password_reset_request(self):
         response = self.client.post(self.reset_request_url, {'email': 'test@example.com'})

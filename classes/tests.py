@@ -20,8 +20,11 @@ class GymClassTests(APITestCase):
         self.gym_class_data = {
             'name': 'Yoga Class',
             'description': 'Relaxing yoga session',
+            'instructor': 'John Doe',
             'capacity': 20,
-            'schedule': timezone.now() + timezone.timedelta(days=1)
+            'duration_minutes': 60,
+            'schedule_day': 'monday',
+            'schedule_time': '10:00:00'
         }
 
     def test_create_gym_class(self):
@@ -75,14 +78,18 @@ class ClassBookingTests(APITestCase):
         self.gym_class = GymClass.objects.create(
             name='Yoga Class',
             capacity=2,
-            schedule=timezone.now() + timezone.timedelta(days=1)
+            schedule_day='tuesday',
+            schedule_time='14:00:00',
+            instructor='John Doe',
+            duration_minutes=60
         )
 
     def test_book_class(self):
         url = reverse('booking-list')
         response = self.client.post(url, {
             'member': self.member.pk,
-            'gym_class': self.gym_class.pk
+            'gym_class': self.gym_class.pk,
+            'booking_date': timezone.now().date()
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ClassBooking.objects.count(), 1)
@@ -91,7 +98,8 @@ class ClassBookingTests(APITestCase):
     def test_list_bookings(self):
         ClassBooking.objects.create(
             member=self.member,
-            gym_class=self.gym_class
+            gym_class=self.gym_class,
+            booking_date=timezone.now().date()
         )
         url = reverse('booking-list')
         response = self.client.get(url)

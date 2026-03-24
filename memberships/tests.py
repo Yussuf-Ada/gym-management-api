@@ -90,7 +90,8 @@ class MemberMembershipTests(APITestCase):
     def test_list_subscriptions(self):
         MemberMembership.objects.create(
             member=self.member,
-            membership=self.membership
+            membership=self.membership,
+            start_date=timezone.now().date()
         )
         url = reverse('subscription-list')
         response = self.client.get(url)
@@ -100,7 +101,7 @@ class MemberMembershipTests(APITestCase):
         MemberMembership.objects.create(
             member=self.member,
             membership=self.membership,
-            start_date=timezone.now()
+            start_date=timezone.now().date()
         )
         url = reverse('subscription-list') + '?is_active=true'
         response = self.client.get(url)
@@ -110,6 +111,6 @@ class MemberMembershipTests(APITestCase):
         expired_subscription = MemberMembership.objects.create(
             member=self.member,
             membership=self.membership,
-            start_date=timezone.now() - timezone.timedelta(days=31)
+            start_date=timezone.now().date() - timezone.timedelta(days=31)
         )
-        self.assertFalse(expired_subscription.is_active())
+        self.assertTrue(expired_subscription.is_expired)
