@@ -151,6 +151,65 @@ class DashboardStatsView(APIView):
         })
 
 
+class RecentActivityView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request):
+        from members.models import Member
+        from memberships.models import MemberMembership
+        from classes.models import ClassBooking
+        from django.db.models import Q
+
+        recent_members = Member.objects.filter(
+            is_active=True
+        ).order_by('-created_at')[:5]
+        
+        recent_subscriptions = MemberMembership.objects.filter(
+            Q(status='active') | Q(status='cancelled')
+        ).order_by('-created_at')[:5]
+        
+        recent_bookings = ClassBooking.objects.filter(
+            status='confirmed'
+        ).order_by('-created_at')[:5]
+
+        activities = []
+        
+        # Add recent members
+        for member in recent_members:
+            activities.append({
+                'type': 'new_member',
+                'title': f'New member: {member.full_name}',
+                'description': f'Joined on {member.joined_date}',
+                'timestamp': member.created_at,
+                'icon': 'user'
+            })
+        
+        # Add recent subscriptions
+        for sub in recent_subscriptions:
+            activities.append({
+                'type': 'subscription',
+                'title': f'{sub.member.full_name} subscribed to {sub.membership.name}',
+                'description': f'Started: {sub.start_date}',
+                'timestamp': sub.created_at,
+                'icon': 'credit_card'
+            })
+        
+        # Add recent bookings
+        for booking in recent_bookings:
+            activities.append({
+                'type': 'booking',
+                'title': f'{booking.member.full_name} booked {booking.gym_class.name}',
+                'description': f'Class on {booking.booking_date}',
+                'timestamp': booking.created_at,
+                'icon': 'calendar'
+            })
+        
+        # Sort all activities by timestamp
+        activities.sort(key=lambda x: x['timestamp'], reverse=True)
+        
+        return Response(activities[:10])  # Return latest 10 activities
+
+
 class PasswordResetRequestView(APIView):
     permission_classes = (AllowAny,)
 

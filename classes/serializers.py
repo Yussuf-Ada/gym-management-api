@@ -18,12 +18,15 @@ class GymClassSerializer(serializers.ModelSerializer):
 class ClassBookingSerializer(serializers.ModelSerializer):
     class_name = serializers.CharField(source='gym_class.name', read_only=True)
     member_name = serializers.CharField(source='member.full_name', read_only=True)
+    schedule_time = serializers.CharField(source='gym_class.schedule_time', read_only=True)
+    schedule_day = serializers.CharField(source='gym_class.schedule_day', read_only=True)
 
     class Meta:
         model = ClassBooking
         fields = (
             'id', 'gym_class', 'class_name', 'member', 'member_name',
-            'booking_date', 'status', 'created_at', 'updated_at'
+            'booking_date', 'status', 'schedule_time', 'schedule_day',
+            'created_at', 'updated_at'
         )
         read_only_fields = ('id', 'created_at', 'updated_at')
 
