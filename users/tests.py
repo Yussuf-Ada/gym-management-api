@@ -133,7 +133,8 @@ class PasswordResetTests(APITestCase):
 
     def test_password_reset_invalid_email(self):
         response = self.client.post(self.reset_request_url, {'email': 'wrong@example.com'})
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)  # Returns 200 for security
+        self.assertEqual(PasswordResetToken.objects.count(), 0)  # No token created
 
     def test_password_reset_confirm(self):
         token = PasswordResetToken.objects.create(
@@ -143,10 +144,12 @@ class PasswordResetTests(APITestCase):
         )
         response = self.client.post(self.reset_confirm_url, {
             'token': token.token,
-            'new_password': 'NewPass123!'
+            'new_password': 'NewPass123!',
+            'new_password_confirm': 'NewPass123!'
         })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertTrue(token.is_used)
+        token.refresh_from_db()
+        self.assertTrue(token.used)
 
     def test_password_reset_expired_token(self):
         token = PasswordResetToken.objects.create(
