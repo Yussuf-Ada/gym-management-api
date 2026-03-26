@@ -24,13 +24,9 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-        refresh = RefreshToken.for_user(user)
         return Response({
-            'user': UserSerializer(user).data,
-            'tokens': {
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }
+            'message': 'User created successfully. Please log in.',
+            'user': UserSerializer(user).data
         }, status=status.HTTP_201_CREATED)
 
 
@@ -125,22 +121,33 @@ class DashboardStatsView(APIView):
         from classes.models import GymClass, ClassBooking
 
         today = timezone.now().date()
+        user = request.user
 
-        total_members = Member.objects.filter(is_active=True).count()
-        active_subscriptions = MemberMembership.objects.filter(
-            status='active',
-            end_date__gte=today
-        ).count()
-        expiring_soon = MemberMembership.objects.filter(
-            status='active',
-            end_date__gte=today,
-            end_date__lte=today + timezone.timedelta(days=7)
-        ).count()
-        total_classes = GymClass.objects.filter(is_active=True).count()
-        todays_bookings = ClassBooking.objects.filter(
-            booking_date=today,
-            status='confirmed'
-        ).count()
+        # Check if user is admin
+        if user.role == 'admin' and user.is_staff:
+            # Admin sees all data
+            total_members = Member.objects.filter(is_active=True).count()
+            active_subscriptions = MemberMembership.objects.filter(
+                status='active',
+                end_date__gte=today
+            ).count()
+            expiring_soon = MemberMembership.objects.filter(
+                status='active',
+                end_date__gte=today,
+                end_date__lte=today + timezone.timedelta(days=7)
+            ).count()
+            total_classes = GymClass.objects.filter(is_active=True).count()
+            todays_bookings = ClassBooking.objects.filter(
+                booking_date=today,
+                status='confirmed'
+            ).count()
+        else:
+            # Regular users see their own data (empty for new users)
+            total_members = 0
+            active_subscriptions = 0
+            expiring_soon = 0
+            total_classes = 0
+            todays_bookings = 0
 
         return Response({
             'total_members': total_members,
