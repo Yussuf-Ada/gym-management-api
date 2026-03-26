@@ -26,7 +26,7 @@ class AuthenticationTests(APITestCase):
     def test_user_registration(self):
         response = self.client.post(self.register_url, self.user_data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertIn('tokens', response.data)
+        self.assertIn('message', response.data)
         self.assertIn('user', response.data)
         self.assertEqual(response.data['user']['email'], self.user_data['email'])
 

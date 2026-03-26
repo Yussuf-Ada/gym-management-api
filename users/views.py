@@ -123,27 +123,31 @@ class DashboardStatsView(APIView):
         today = timezone.now().date()
         user = request.user
 
-        # Debug logging
-        print(f"User: {user.email}")
-        print(f"Role: {user.role}")
-        print(f"Is Staff: {user.is_staff}")
-
-        # Temporarily remove role check to test
-        total_members = Member.objects.filter(is_active=True).count()
-        active_subscriptions = MemberMembership.objects.filter(
-            status='active',
-            end_date__gte=today
-        ).count()
-        expiring_soon = MemberMembership.objects.filter(
-            status='active',
-            end_date__gte=today,
-            end_date__lte=today + timezone.timedelta(days=7)
-        ).count()
-        total_classes = GymClass.objects.filter(is_active=True).count()
-        todays_bookings = ClassBooking.objects.filter(
-            booking_date=today,
-            status='confirmed'
-        ).count()
+        # Check if user is admin - use OR condition for flexibility
+        if user.role == 'admin' or user.is_staff:
+            # Admin sees all data
+            total_members = Member.objects.filter(is_active=True).count()
+            active_subscriptions = MemberMembership.objects.filter(
+                status='active',
+                end_date__gte=today
+            ).count()
+            expiring_soon = MemberMembership.objects.filter(
+                status='active',
+                end_date__gte=today,
+                end_date__lte=today + timezone.timedelta(days=7)
+            ).count()
+            total_classes = GymClass.objects.filter(is_active=True).count()
+            todays_bookings = ClassBooking.objects.filter(
+                booking_date=today,
+                status='confirmed'
+            ).count()
+        else:
+            # Regular users see their own data (empty for new users)
+            total_members = 0
+            active_subscriptions = 0
+            expiring_soon = 0
+            total_classes = 0
+            todays_bookings = 0
 
         return Response({
             'total_members': total_members,
@@ -163,17 +167,27 @@ class RecentActivityView(APIView):
         from classes.models import ClassBooking
         from django.db.models import Q
 
-        recent_members = Member.objects.filter(
-            is_active=True
-        ).order_by('-created_at')[:5]
-        
-        recent_subscriptions = MemberMembership.objects.filter(
-            Q(status='active') | Q(status='cancelled')
-        ).order_by('-created_at')[:5]
-        
-        recent_bookings = ClassBooking.objects.filter(
-            status='confirmed'
-        ).order_by('-created_at')[:5]
+        user = request.user
+
+        # Check if user is admin
+        if user.role == 'admin' or user.is_staff:
+            # Admin sees all activity
+            recent_members = Member.objects.filter(
+                is_active=True
+            ).order_by('-created_at')[:5]
+            
+            recent_subscriptions = MemberMembership.objects.filter(
+                Q(status='active') | Q(status='cancelled')
+            ).order_by('-created_at')[:5]
+            
+            recent_bookings = ClassBooking.objects.filter(
+                status='confirmed'
+            ).order_by('-created_at')[:5]
+        else:
+            # Regular users see no activity
+            recent_members = Member.objects.none()
+            recent_subscriptions = MemberMembership.objects.none()
+            recent_bookings = ClassBooking.objects.none()
 
         activities = []
         
