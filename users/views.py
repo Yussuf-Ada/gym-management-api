@@ -227,10 +227,11 @@ class RecentActivityView(APIView):
         return Response(activities[:10])  # Return latest 10 activities
 
 
+"""
 class LoadMockDataView(APIView):
-    """
+    \"\"\"
     Temporary endpoint to load mock data (remove in production)
-    """
+    \"\"\"
     def post(self, request):
         try:
             from members.management.commands.setup_mock_data import Command
@@ -244,6 +245,7 @@ class LoadMockDataView(APIView):
             return Response({
                 'error': f'Failed to load mock data: {str(e)}'
             }, status=500)
+"""
 
 
 class PasswordResetRequestView(APIView):
