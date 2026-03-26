@@ -6,6 +6,10 @@ def send_password_reset_email(email, reset_token):
     frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
     reset_link = f"{frontend_url}/reset-password?token={reset_token}"
 
+    print(f"Sending password reset email to: {email}")
+    print(f"SendGrid API Key: {'SET' if os.getenv('SENDGRID_API_KEY') else 'NOT SET'}")
+    print(f"From Email: {os.getenv('DEFAULT_FROM_EMAIL', 'NOT SET')}")
+
     subject = 'Password Reset Request'
     message = f'''
         Password Reset
@@ -29,7 +33,7 @@ def send_password_reset_email(email, reset_token):
     '''
 
     try:
-        send_mail(
+        result = send_mail(
             subject,
             message,
             os.getenv('DEFAULT_FROM_EMAIL', 'noreply@gym.com'),
@@ -37,6 +41,7 @@ def send_password_reset_email(email, reset_token):
             html_message=html_message,
             fail_silently=False,
         )
+        print(f"Email send result: {result}")
         return True
     except Exception as e:
         print(f"Failed to send password reset email: {e}")
