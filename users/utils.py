@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 
 
 def send_password_reset_email(email, reset_token):
-    frontend_url = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+    frontend_url = os.getenv('FRONTEND_URL', 'https://gym-management-frontend-zeta.vercel.app')
     reset_link = f"{frontend_url}/reset-password?token={reset_token}"
 
     print(f"Sending password reset email to: {email}")
