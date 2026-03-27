@@ -29,6 +29,14 @@ class MemberViewSet(viewsets.ModelViewSet):
         member = self.get_object()
         if 'profile_image' not in request.FILES:
             return Response({'error': 'No image provided'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        print(f"Uploading image for member: {member.id}")
+        print(f"Image file: {request.FILES['profile_image']}")
+        
         member.profile_image = request.FILES['profile_image']
         member.save()
+        
+        print(f"Image saved. URL: {member.profile_image.url}")
+        print(f"Image storage: {member.profile_image.storage}")
+        
         return Response({'profile_image': member.profile_image.url})

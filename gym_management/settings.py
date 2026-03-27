@@ -165,6 +165,12 @@ CLOUDINARY_STORAGE = {
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
+# Debug Cloudinary settings
+print(f"Cloudinary Cloud Name: {'SET' if os.getenv('CLOUDINARY_CLOUD_NAME') else 'NOT SET'}")
+print(f"Cloudinary API Key: {'SET' if os.getenv('CLOUDINARY_API_KEY') else 'NOT SET'}")
+print(f"Cloudinary API Secret: {'SET' if os.getenv('CLOUDINARY_API_SECRET') else 'NOT SET'}")
+print(f"Default File Storage: {DEFAULT_FILE_STORAGE}")
+
 # SendGrid Settings
 EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
 SENDGRID_API_KEY = os.getenv('SENDGRID_API_KEY')
