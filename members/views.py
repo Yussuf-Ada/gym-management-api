@@ -41,17 +41,9 @@ class MemberViewSet(viewsets.ModelViewSet):
             if image_file.size > 5 * 1024 * 1024:
                 return Response({'error': 'Image too large. Maximum size is 5MB.'}, status=status.HTTP_400_BAD_REQUEST)
             
-            print(f"Uploading image for member: {member.id}")
-            print(f"Image file: {image_file}")
-            print(f"Image size: {image_file.size} bytes")
-            
             member.profile_image = image_file
             member.save()
             
-            print(f"Image saved. URL: {member.profile_image.url}")
-            print(f"Image storage: {member.profile_image.storage}")
-            
             return Response({'profile_image': member.profile_image.url})
         except Exception as e:
-            print(f"Upload error: {str(e)}")
             return Response({'error': f'Upload failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
