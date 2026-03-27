@@ -58,6 +58,21 @@ class AuthenticationTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class UserProfileTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(

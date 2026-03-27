@@ -75,7 +75,6 @@ WSGI_APPLICATION = 'gym_management.wsgi.application'
 
 # Database
 # SQLite for local development, PostgreSQL for production
-# Force SQLite for tests to avoid CI/CD issues
 import sys
 if 'test' in sys.argv:
     DATABASE_URL = 'sqlite:///test_db.sqlite3'
@@ -185,12 +184,6 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', 'test_api_secret'),
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
-
-# Debug Cloudinary settings
-print(f"Cloudinary Cloud Name: {'SET' if os.getenv('CLOUDINARY_CLOUD_NAME') else 'NOT SET'}")
-print(f"Cloudinary API Key: {'SET' if os.getenv('CLOUDINARY_API_KEY') else 'NOT SET'}")
-print(f"Cloudinary API Secret: {'SET' if os.getenv('CLOUDINARY_API_SECRET') else 'NOT SET'}")
-print(f"Default File Storage: {DEFAULT_FILE_STORAGE}")
 
 # SendGrid Settings
 EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'

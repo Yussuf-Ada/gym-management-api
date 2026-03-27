@@ -18,16 +18,12 @@ class MemberSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         profile_image = validated_data.pop('profile_image', None)
         
-        # Update other fields - only update if provided
         for attr, value in validated_data.items():
             if value is not None and value != '':
                 setattr(instance, attr, value)
         
-        # Handle image update
         if profile_image:
-            print(f"Updating profile image: {profile_image}")
             instance.profile_image = profile_image
-            print(f"Image URL after update: {instance.profile_image.url}")
         
         instance.save()
         return instance
