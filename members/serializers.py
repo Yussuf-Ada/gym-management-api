@@ -15,6 +15,22 @@ class MemberSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('id', 'joined_date', 'created_at', 'updated_at')
     
+    def update(self, instance, validated_data):
+        profile_image = validated_data.pop('profile_image', None)
+        
+        # Update other fields
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        
+        # Handle image update
+        if profile_image:
+            print(f"Updating profile image: {profile_image}")
+            instance.profile_image = profile_image
+            print(f"Image URL after update: {instance.profile_image.url}")
+        
+        instance.save()
+        return instance
+    
     def get_profile_image_url(self, obj):
         if obj.profile_image:
             return obj.profile_image.url

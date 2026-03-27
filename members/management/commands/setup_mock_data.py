@@ -34,16 +34,16 @@ class Command(BaseCommand):
         
         # Create mock members
         members_data = [
-            {'first_name': 'John', 'last_name': 'Smith', 'email': 'john.smith@email.com', 'phone': '07700900001'},
-            {'first_name': 'Sarah', 'last_name': 'Johnson', 'email': 'sarah.j@email.com', 'phone': '07700900002'},
-            {'first_name': 'Mike', 'last_name': 'Wilson', 'email': 'mike.w@email.com', 'phone': '07700900003'},
-            {'first_name': 'Emma', 'last_name': 'Davis', 'email': 'emma.d@email.com', 'phone': '07700900004'},
-            {'first_name': 'James', 'last_name': 'Brown', 'email': 'james.b@email.com', 'phone': '07700900005'},
-            {'first_name': 'Lisa', 'last_name': 'Anderson', 'email': 'lisa.a@email.com', 'phone': '07700900006'},
-            {'first_name': 'David', 'last_name': 'Miller', 'email': 'david.m@email.com', 'phone': '07700900007'},
-            {'first_name': 'Rachel', 'last_name': 'Taylor', 'email': 'rachel.t@email.com', 'phone': '07700900008'},
-            {'first_name': 'Tom', 'last_name': 'Moore', 'email': 'tom.m@email.com', 'phone': '07700900009'},
-            {'first_name': 'Amy', 'last_name': 'White', 'email': 'amy.w@email.com', 'phone': '07700900010'},
+            {'first_name': 'John', 'last_name': 'Smith', 'email': 'john.smith@email.com', 'phone': '07700900001', 'date_of_birth': '1990-05-15'},
+            {'first_name': 'Sarah', 'last_name': 'Johnson', 'email': 'sarah.j@email.com', 'phone': '07700900002', 'date_of_birth': '1985-08-22'},
+            {'first_name': 'Mike', 'last_name': 'Wilson', 'email': 'mike.w@email.com', 'phone': '07700900003', 'date_of_birth': '1992-03-10'},
+            {'first_name': 'Emma', 'last_name': 'Davis', 'email': 'emma.d@email.com', 'phone': '07700900004', 'date_of_birth': '1988-12-05'},
+            {'first_name': 'James', 'last_name': 'Brown', 'email': 'james.b@email.com', 'phone': '07700900005', 'date_of_birth': '1995-07-18'},
+            {'first_name': 'Lisa', 'last_name': 'Anderson', 'email': 'lisa.a@email.com', 'phone': '07700900006', 'date_of_birth': '1991-09-30'},
+            {'first_name': 'David', 'last_name': 'Miller', 'email': 'david.m@email.com', 'phone': '07700900007', 'date_of_birth': '1987-04-12'},
+            {'first_name': 'Rachel', 'last_name': 'Taylor', 'email': 'rachel.t@email.com', 'phone': '07700900008', 'date_of_birth': '1993-11-25'},
+            {'first_name': 'Tom', 'last_name': 'Moore', 'email': 'tom.m@email.com', 'phone': '07700900009', 'date_of_birth': '1989-06-08'},
+            {'first_name': 'Amy', 'last_name': 'White', 'email': 'amy.w@email.com', 'phone': '07700900010', 'date_of_birth': '1994-02-14'},
         ]
         
         members = []

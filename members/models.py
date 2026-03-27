@@ -1,5 +1,6 @@
 import uuid
 from django.db import models
+from cloudinary_storage.storage import MediaCloudinaryStorage
 
 
 class Member(models.Model):
@@ -10,7 +11,7 @@ class Member(models.Model):
     phone = models.CharField(max_length=20, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     emergency_contact = models.CharField(max_length=255, blank=True)
-    profile_image = models.ImageField(upload_to='member_profiles/', blank=True, null=True)
+    profile_image = models.ImageField(upload_to='member_profiles/', blank=True, null=True, storage=MediaCloudinaryStorage())
     is_active = models.BooleanField(default=True)
     joined_date = models.DateField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)

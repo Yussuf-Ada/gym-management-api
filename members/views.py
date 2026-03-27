@@ -25,17 +25,17 @@ class MemberViewSet(viewsets.ModelViewSet):
             return MemberListSerializer
         return MemberSerializer
 
-    def create(self, request, *args, **kwargs):
-        print(f"Create method called")
+    def update(self, request, *args, **kwargs):
+        print(f"Update method called")
         print(f"Request data: {request.data}")
         print(f"Request files: {request.FILES}")
         print(f"Content-Type: {request.content_type}")
         
         if 'profile_image' in request.FILES:
-            print(f"Profile image found: {request.FILES['profile_image']}")
+            print(f"Profile image found in update: {request.FILES['profile_image']}")
             print(f"Image size: {request.FILES['profile_image'].size}")
         
-        return super().create(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
     @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
     def upload_image(self, request, pk=None):
