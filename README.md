@@ -271,7 +271,7 @@ This project was developed with assistance from generative AI tools to support l
 - **Code Structure**: Project scaffolding and component organisation
 - **Debugging Support**: Resolving issues with SendGrid, Cloudinary, and testing
 - **Architecture Guidance**: Django REST Framework best practices and security
-- **Testing Strategy**: Developing comprehensive test cases and achieving 68% coverage
+- **Testing Strategy**: Developing comprehensive test cases and achieving 80% coverage
 - **Documentation**: Improving technical documentation clarity
 
 ---
