@@ -26,17 +26,28 @@ class MemberViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
     def upload_image(self, request, pk=None):
-        member = self.get_object()
-        if 'profile_image' not in request.FILES:
-            return Response({'error': 'No image provided'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        print(f"Uploading image for member: {member.id}")
-        print(f"Image file: {request.FILES['profile_image']}")
-        
-        member.profile_image = request.FILES['profile_image']
-        member.save()
-        
-        print(f"Image saved. URL: {member.profile_image.url}")
-        print(f"Image storage: {member.profile_image.storage}")
-        
-        return Response({'profile_image': member.profile_image.url})
+        try:
+            member = self.get_object()
+            if 'profile_image' not in request.FILES:
+                return Response({'error': 'No image provided'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            image_file = request.FILES['profile_image']
+            
+            # Check file size (max 5MB)
+            if image_file.size > 5 * 1024 * 1024:
+                return Response({'error': 'Image too large. Maximum size is 5MB.'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            print(f"Uploading image for member: {member.id}")
+            print(f"Image file: {image_file}")
+            print(f"Image size: {image_file.size} bytes")
+            
+            member.profile_image = image_file
+            member.save()
+            
+            print(f"Image saved. URL: {member.profile_image.url}")
+            print(f"Image storage: {member.profile_image.storage}")
+            
+            return Response({'profile_image': member.profile_image.url})
+        except Exception as e:
+            print(f"Upload error: {str(e)}")
+            return Response({'error': f'Upload failed: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
