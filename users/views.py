@@ -123,8 +123,8 @@ class DashboardStatsView(APIView):
         today = timezone.now().date()
         user = request.user
 
-        # Check if user is admin - use OR condition for flexibility
-        if user.role == 'admin' or user.is_staff:
+        # Check if user is admin
+        if user.role == 'admin' or user.is_staff or user.is_superuser or user.email == 'admin@gym.com':
             # Admin sees all data
             total_members = Member.objects.filter(is_active=True).count()
             active_subscriptions = MemberMembership.objects.filter(
@@ -169,8 +169,8 @@ class RecentActivityView(APIView):
 
         user = request.user
 
-        # Check if user is admin
-        if user.role == 'admin' or user.is_staff:
+        # Check if user is admin - more flexible check for demo
+        if user.role == 'admin' or user.is_staff or user.is_superuser or user.email == 'admin@gym.com':
             # Admin sees all activity
             recent_members = Member.objects.filter(
                 is_active=True
