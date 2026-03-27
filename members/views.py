@@ -13,6 +13,7 @@ from .filters import MemberFilter
 class MemberViewSet(viewsets.ModelViewSet):
     queryset = Member.objects.all()
     permission_classes = (IsAuthenticated,)
+    parser_classes = [MultiPartParser, FormParser]
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filterset_class = MemberFilter
     search_fields = ('first_name', 'last_name', 'email', 'phone')
