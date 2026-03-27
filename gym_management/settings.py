@@ -75,7 +75,13 @@ WSGI_APPLICATION = 'gym_management.wsgi.application'
 
 # Database
 # SQLite for local development, PostgreSQL for production
-DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
+# Force SQLite for tests to avoid CI/CD issues
+import sys
+if 'test' in sys.argv:
+    DATABASE_URL = 'sqlite:///test_db.sqlite3'
+else:
+    DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///db.sqlite3')
+
 DATABASES = {
     'default': dj_database_url.parse(DATABASE_URL)
 }
