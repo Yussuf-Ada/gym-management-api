@@ -90,7 +90,7 @@ if 'postgres' in DATABASE_URL:
         'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
         'PORT': os.getenv('POSTGRES_PORT', '5432'),
         'OPTIONS': {
-            'sslmode': 'require',
+            'sslmode': 'prefer',
         },
     })
 
@@ -174,9 +174,9 @@ if not DEBUG:
 
 # Cloudinary Settings
 CLOUDINARY_STORAGE = {
-    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
-    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
-    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME', 'test_cloud_name'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY', 'test_api_key'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET', 'test_api_secret'),
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
