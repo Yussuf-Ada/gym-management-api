@@ -84,7 +84,8 @@ class DashboardTests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email='admin@example.com',
-            password='AdminPass123!'
+            password='AdminPass123!',
+            role='admin'
         )
         self.client.force_authenticate(user=self.user)
         self.dashboard_url = reverse('dashboard_stats')

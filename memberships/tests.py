@@ -82,7 +82,8 @@ class MemberMembershipTests(APITestCase):
         url = reverse('subscription-list')
         response = self.client.post(url, {
             'member': self.member.pk,
-            'membership': self.membership.pk
+            'membership': self.membership.pk,
+            'start_date': timezone.now().date()
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(MemberMembership.objects.count(), 1)
